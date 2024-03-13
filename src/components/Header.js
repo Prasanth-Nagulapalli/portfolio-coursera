@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -33,6 +33,66 @@ const socials = [
 ];
 
 const Header = () => {
+  // ! Scroll Animation one
+
+  /*If you Want to Work With this functionality you should uncomment transform Property below  in the <Box /> */
+
+  // const [prevScrollPos, setPrevScrollPos] = useState(0);
+  // const [visible, setVisible] = useState(true);
+  // const headerRef = useRef(null);
+
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentScrollPos = window.pageYOffset;
+  //     const visible = prevScrollPos > currentScrollPos;
+  //     setVisible(visible);
+  //     setPrevScrollPos(currentScrollPos);
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [prevScrollPos]);
+
+  /* SCroll Animation */
+
+  // ! Scroll Animation one Closed
+
+
+  
+  //  ! Courser Scroll Animation
+
+  /* This scroll animation will be manuplated Dom Directly using useRef hook */
+
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    let prevScrollPos = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+      const headerElement = headerRef.current;
+      if (!headerElement) {
+        return;
+      }
+      if (prevScrollPos > currentScrollPos) {
+        headerElement.style.transform = "translateY(0)";
+      } else {
+        headerElement.style.transform = "translateY(-200px)";
+      }
+      prevScrollPos = currentScrollPos;
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // ! Courser Scroll Animation
+
   const handleClick = (anchor) => () => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
@@ -50,11 +110,13 @@ const Header = () => {
       top={0}
       left={0}
       right={0}
+      // transform={`translateY(${visible ? '0' : '-200px'})`}
       translateY={0}
       transitionProperty="transform"
-      transitionDuration=".3s"
+      transitionDuration="0.5s"
       transitionTimingFunction="ease-in-out"
       backgroundColor="#18181b"
+      ref={headerRef}
     >
       <Box color="white" maxWidth="1280px" margin="0 auto">
         <HStack
@@ -64,14 +126,27 @@ const Header = () => {
           alignItems="center"
         >
           <nav>
-            {/* Add social media links based on the `socials` data */}
-            <ul>
-              
-            </ul>
+            <HStack spacing={8}>
+              {socials.map(({ icon, url }) => (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon icon={icon} size="2x" key={url} />
+                </a>
+              ))}
+            </HStack>
           </nav>
           <nav>
             <HStack spacing={8}>
-              {/* Add links to Projects and Contact me section */}
+              <a href="#projects" onClick={handleClick("projects")}>
+                Projects
+              </a>
+              <a href="#contactme" onClick={handleClick("contactme")}>
+                Contact Me
+              </a>
             </HStack>
           </nav>
         </HStack>
